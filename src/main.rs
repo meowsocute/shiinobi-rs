@@ -1,12 +1,21 @@
 mod builder;
+mod cli;
+
 use builder::anime_theme::AnimeGenreBuilder;
-// use futures::executor::block_on;
+use cli::cli;
 
 #[tokio::main]
 async fn main() {
-    println!("Hello, world!");
-    _get_anime_themes().await;
-    // block_on(anime)
+    let matches = cli().get_matches();
+
+    match matches.subcommand() {
+        Some(("get-anime-themes", _args)) => _get_anime_themes().await,
+
+        Some((ext, _)) => {
+            println!("Unknown command {}", ext);
+        }
+        _ => unreachable!(),
+    }
 }
 
 async fn _get_anime_themes() {
@@ -14,5 +23,4 @@ async fn _get_anime_themes() {
     for items in dictionary {
         println!("{}", items)
     }
-    // println!("{:?}", dictionary)
 }
